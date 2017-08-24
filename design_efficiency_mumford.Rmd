@@ -1,5 +1,5 @@
 ---
-title: "Untitled"
+title: "Efficiency for fMRI"
 author: "Jeanette Mumford"
 date: "8/23/2017"
 output:
@@ -196,3 +196,7 @@ min(rand.trunc.exp)
 max(rand.trunc.exp)
 
 ```
+
+Of course you can also try different designs such as a stimulus followed by a response cue.  How does jittering the fixation between stimulus and cue increase the efficiency for estimating the cue vs baseline effect?
+
+I've done a bit more with efficiency if you'd like to see those videos you can go to my youtube channel for [mumfordbrainstats](https://www.youtube.com/playlist?list=PLB2iAtgpI4YEnBdb_jDGmMcdGoIBwhCCY).

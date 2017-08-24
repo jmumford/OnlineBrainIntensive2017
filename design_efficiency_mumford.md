@@ -37,7 +37,7 @@ ons.times = c(10, 20 ,30)
 dur = c(1, 1, 1)
 # effect size is for simulating data.  
 #  Since we only want a design matrix, 
-#  we're setting it to 1 (i.e. don't scale
+#  we're setting it to 1 (i.e. don't scale)
 eff.size = 1
  
 reg = specifydesign(ons.times, dur, run.length, tr,
@@ -48,7 +48,7 @@ plot(seq(0, run.length-tr, tr), reg, type = 'l', xlab = "Time (s)",
 
 ![](design_efficiency_mumford_files/figure-html/unnamed-chunk-1-1.png)<!-- -->
 
-**On your own** Generate your own regressors changing the TR, onset times and/or durations.  Keep the effect size at 1, though.  You won't be changing this for the creation of regressors.
+**On your own:** Generate your own regressors changing the TR, onset times and/or durations.  Keep the effect size at 1, though.  You won't be changing this for the creation of regressors.
 
 ## Recreating the example I showed in the slides
 This example shows the efficiency calculation for the example I had in the presentation where there are two stimuli, say faces and houses, such that there are never more than 2 faces or houses in a row, the image is shown for 1s and there is a fixed iti of 2s.  The change in efficiency will be driven by the different stimulus orders.
@@ -112,12 +112,12 @@ con = c(0, 1, -1) # faces-houses -> faces > houses
 
 ```
 ##          [,1]
-## [1,] 14.38965
+## [1,] 14.97593
 ```
 Of course the efficiency value by itself is meaningless, but we can use it to rank a bunch of designs.  We'll use a for loop to generate 10 designs.  Basically all the code from above is copy and pasted into a loop.  
 
 ```r
-n.loop = 2
+n.loop = 10
 
 # Things that don't change
 ntrials.each = 30 
@@ -176,3 +176,66 @@ lines(houses.worst, lwd = 2, col = 'cyan')
 
 What you should notice in the final plot from the last chunk of code is the most efficient design leaned toward clumping as many trials in a row as it could (in this case 2) while the less efficient design tended to alternate houses and faces more frequently without repeats.  This is actually why you want to limit the number of consecutive trials, since, psychologically, it is not optimal to have too many in a row yet, statistically, it is best to lump them all together.  You're striking a balance.
 
+Although the efficiency calculation is a great way to rank a bunch of designs, what if they are all bad?  The best of the worst still isn't great.  The Variance Inflation Factor helps us stay away from highly collinear designs (causes our variance to skyrocket) and helps us stay within the realm of only good designs.  In other words, choosing the best of the best!
+
+## Variance Inflation Factor
+The VIF (Variance Inflation Factor) is great because it has a (rule of thumb) threshold that we can use to assess a single design matrix.  It is only assessing collinearity issues, which are related to efficiency.  Typically the worse the collinearity the lower the efficiency.  You still need the efficiency search since it allows us to assess specific contrasts while VIF is simply checkin if a regressor is collinear with other regressors in the model.  To learn more about VIF, check out the [wiki](https://en.wikipedia.org/wiki/Variance_inflation_factor).  Here's how you compute it.
+
+```r
+# Omit the intercept
+diag(solve(cor(des.mat[,2:3])))
+```
+
+```
+##     C1     C1 
+## 3.0134 3.0134
+```
+The VIFs are identical in this case because there are only 2 regressors in the model.  Both are less than 5, so this is a good design!
+
+## Additional exercises
+On you own I recommend using a design of your own to conduct an efficiency search.  Or, using the simple faces/houses design from above and try using a variable ITI.  You can use the uniform distribution with the following code:
+
+```r
+# Sample 60 ITI's randomly between 2-4s using a uniform distribution
+
+iti.uni = runif(60, 2, 4)
+```
+Another option is the truncated exponential and here's how you generate samples from a truncated exponential where the exponential parameter, $\lambda$ is 1.5 and the truncation is 3s is given by the following code.  Two things to note, typically I don't use ITIs really close to 0s, so the shift variable allows me to shift it.  The values below are between 2-6s (shift to shift+T)
+
+
+```r
+lambda = 1.5
+T = 4
+nsamp = 60
+shift = 2
+
+m.theory = lambda - T/(exp(1/lambda*T)-1)
+
+R = runif(nsamp)*(1-exp(-T/lambda))
+rand.trunc.exp = -log(1-R)*lambda + shift
+
+#theoretical mean
+m.theory + shift
+```
+
+```
+## [1] 3.201312
+```
+
+```r
+#min ITI
+min(rand.trunc.exp)
+```
+
+```
+## [1] 2.069704
+```
+
+```r
+#max ITI
+max(rand.trunc.exp)
+```
+
+```
+## [1] 5.764004
+```

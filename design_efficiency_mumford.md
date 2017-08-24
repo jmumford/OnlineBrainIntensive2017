@@ -112,7 +112,7 @@ con = c(0, 1, -1) # faces-houses -> faces > houses
 
 ```
 ##          [,1]
-## [1,] 15.21942
+## [1,] 13.92606
 ```
 Of course the efficiency value by itself is meaningless, but we can use it to rank a bunch of designs.  We'll use a for loop to generate 10 designs.  Basically all the code from above is copy and pasted into a loop.  
 
@@ -188,7 +188,7 @@ diag(solve(cor(des.mat[,2:3])))
 
 ```
 ##       C1       C1 
-## 3.710111 3.710111
+## 3.629957 3.629957
 ```
 The VIFs are identical in this case because there are only 2 regressors in the model.  Both are less than 5, so this is a good design!
 
@@ -228,7 +228,7 @@ min(rand.trunc.exp)
 ```
 
 ```
-## [1] 2.00446
+## [1] 2.002082
 ```
 
 ```r
@@ -237,9 +237,11 @@ max(rand.trunc.exp)
 ```
 
 ```
-## [1] 5.130485
+## [1] 5.847268
 ```
 
 Of course you can also try different designs such as a stimulus followed by a response cue.  How does jittering the fixation between stimulus and cue increase the efficiency for estimating the cue vs baseline effect?
 
 I've done a bit more with efficiency if you'd like to see those videos you can go to my youtube channel for [mumfordbrainstats](https://www.youtube.com/playlist?list=PLB2iAtgpI4YEnBdb_jDGmMcdGoIBwhCCY).
+
+Other resources for efficiency include [optseq](https://surfer.nmr.mgh.harvard.edu/optseq/) and [neuropowertools](http://neuropowertools.org/design/start/) neurodesign tool developed by Joke Durnez.
